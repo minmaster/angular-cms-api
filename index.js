@@ -57,7 +57,7 @@ app.route('/articles/:articleId').get(Controllers.Articles.read)
 app.param('articleId', Controllers.Articles.articleByID);
 
 
-app.listen(CONFIG[ENVIROMENT].port);
+app.listen(process.env.PORT || 3000);
 console.log('listen in port '+CONFIG[ENVIROMENT].port);
 
 module.exports = app;
