@@ -10,6 +10,8 @@ var _ = require('lodash');
 
 exports.signup = function(req, res) {
 
+    console.log(req.body);
+
     delete req.body.roles;
 
     // Init Variables
@@ -22,7 +24,6 @@ exports.signup = function(req, res) {
 
     // Then save the user
     user.save(function(err) {
-        console.log(err);
 
         if (err) {
             return res.status(400).send({
