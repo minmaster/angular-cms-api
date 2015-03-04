@@ -1,1 +1,2 @@
-web: npm start
+worker : cp config.json.dist config.json
+web: node .
