@@ -1,0 +1,8 @@
+{
+    "_comment": "server: local, dev, pro, quality, staging",
+    "local": {
+        "port" : 8090,
+        "db" : "mongodb://localhost:27017/angularcms"
+    },
+    "server" : "local"
+}
