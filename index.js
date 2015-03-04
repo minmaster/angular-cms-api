@@ -23,7 +23,7 @@ var db = mongoose.connect(CONFIG[ENVIROMENT].db, function(err) {
     }
 });
 
-var PORT = process.env.PORT || CONFIG[ENVIROMENT]port;
+var PORT = process.env.PORT || CONFIG[ENVIROMENT].port;
 
 
 app.use(bodyParser.urlencoded({
