@@ -4,6 +4,8 @@
   "description": "Api for Workshop Angular CMS",
   "main": "index.js",
   "scripts": {
+    "prestart" : "cp config.json.dist config.json",
+    "start" : "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

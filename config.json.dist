@@ -9,5 +9,5 @@
         "db" : "mongodb://angularcms:angularcms@ds039341.mongolab.com:39341/heroku_app34568631"
 
     },
-    "server" : "local"
+    "server" : "pro"
 }
