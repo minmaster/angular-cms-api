@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var methodOverride = require('method-override');
 
-var Models = requireDir('./models');
-var Controllers = requireDir('./controllers');
+var Models = requireDir('./libs/models');
+var Controllers = requireDir('./libs/controllers');
 
 global.CONFIG = require('./config.json');
 
@@ -59,4 +59,6 @@ app.param('articleId', Controllers.Articles.articleByID);
 
 app.listen(CONFIG[ENVIROMENT].port);
 console.log('listen in port '+CONFIG[ENVIROMENT].port);
+
+module.exports = app;
 

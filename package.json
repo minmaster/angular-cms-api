@@ -4,9 +4,9 @@
   "description": "Api for Workshop Angular CMS",
   "main": "index.js",
   "scripts": {
-    "prestart" : "cp config.json.dist config.json",
-    "start" : "node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prestart": "cp config.json.dist config.json",
+    "start": "node .",
+    "test": "mocha -R spec ./test/test.js"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,12 @@
     "express": "^4.12.2",
     "lodash": "^3.3.1",
     "method-override": "^2.3.1",
+    "mocha": "^2.1.0",
     "mongoose": "^3.8.24",
     "passport": "^0.2.1",
     "require-dir": "^0.1.0"
+  },
+  "devDependencies": {
+    "supertest": "^0.15.0"
   }
 }
