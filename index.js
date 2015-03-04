@@ -39,6 +39,9 @@ app.use(function(req, res, next) {
 });
 
 
+app.route('/').get(function(req, res) { res.status(404).send({ 'error' : 'not found'})});
+
+
 app.route('/users/signup').post(Controllers.Users.signup);
 app.route('/users/signin').get(Controllers.Users.signin);
 app.route('/users/logout').get(Controllers.Users.signout);
