@@ -23,6 +23,8 @@ var db = mongoose.connect(CONFIG[ENVIROMENT].db, function(err) {
     }
 });
 
+var PORT = process.env.PORT || CONFIG[ENVIROMENT]port;
+
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -57,8 +59,8 @@ app.route('/articles/:articleId').get(Controllers.Articles.read)
 app.param('articleId', Controllers.Articles.articleByID);
 
 
-app.listen(process.env.PORT || 3000);
-console.log('listen in port '+CONFIG[ENVIROMENT].port);
+app.listen(PORT);
+console.log('listen in port '+PORT);
 
 module.exports = app;
 
