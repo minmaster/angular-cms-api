@@ -3,14 +3,62 @@
 var mongoose = require('mongoose'),
     errorHandler = require('./Errors'),
     passport = require('passport'),
-    User = mongoose.model('User');
+    LocalStrategy = require('passport-local').Strategy,
+    User = mongoose.model('User'),
+    jwt = require('jsonwebtoken');
 
 var _ = require('lodash');
+
+// Use local strategy
+passport.use(new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password'
+    },
+    function(email, password, done) {
+        User.findOne({
+            email: email
+        }, function(err, user) {
+
+            console.log(user);
+            console.log(user.authenticate(password));
+
+            if (err) {
+                return done(err);
+            }
+            if (!user) {
+                return done(null, false, {
+                    message: 'Unknown user or invalid password'
+                });
+            }
+            if (!user.authenticate(password)) {
+                return done(null, false, {
+                    message: 'Unknown user or invalid password'
+                });
+            }
+
+            return done(null, user);
+        });
+    }
+));
+
+// Serialize sessions
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+// Deserialize sessions
+passport.deserializeUser(function(id, done) {
+    User.findOne({
+        _id: id
+    }, '-salt -password', function(err, user) {
+        done(err, user);
+    });
+});
+
 
 
 exports.signup = function(req, res) {
 
-    console.log(req.body);
 
     delete req.body.roles;
 
@@ -61,7 +109,10 @@ exports.signin = function(req, res, next) {
                 if (err) {
                     res.status(400).send(err);
                 } else {
-                    res.jsonp(user);
+
+                    var token = jwt.sign(user, secretToken, { expiresInMinutes: 60 });
+
+                    res.json({ user : user, token: token});
                 }
             });
         }
@@ -73,7 +124,7 @@ exports.signin = function(req, res, next) {
  */
 exports.signout = function(req, res) {
     req.logout();
-    res.redirect('/');
+    res.status(200).send({status: 'OK'});
 };
 
 
@@ -89,6 +140,15 @@ exports.requiresLogin = function(req, res, next) {
 
     next();
 };
+
+
+/**
+ * Require login routing middleware
+ */
+exports.checkLogin = function(req, res) {
+    res.status(200).send({ message: 'User logged'})
+};
+
 
 /**
  * User authorizations routing middleware

@@ -6,11 +6,14 @@ var requireDir = require('require-dir');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var methodOverride = require('method-override');
+var expressJwt = require('express-jwt');
+var jwt = require('jsonwebtoken');
 
 var Models = requireDir('./libs/models');
 var Controllers = requireDir('./libs/controllers');
 
 global.CONFIG = require('./config.json');
+global.secretToken = 'secret-token-sssh';
 
 var ENVIROMENT = global.CONFIG.server;
 
@@ -25,6 +28,8 @@ var db = mongoose.connect(CONFIG[ENVIROMENT].db, function(err) {
 
 var PORT = process.env.PORT || CONFIG[ENVIROMENT].port;
 
+app.use(require('express-domain-middleware'));
+
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -36,17 +41,31 @@ app.use(passport.session());
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     next();
 });
+
+
+
+app.use(function errorHandler(err, req, res, next) {
+    console.log('error on request %d %s %s', process.domain.id, req.method, req.url);
+    console.log(err.stack);
+    res.send(500, "Something bad happened. :(");
+    if(err.domain) {
+        //you should think about gracefully stopping & respawning your server
+        //since an unhandled error might put your application into an unknown state
+    }
+});
+
 
 
 app.route('/').get(function(req, res) { res.status(404).send({ 'error' : 'not found'})});
 
 
 app.route('/users/signup').post(Controllers.Users.signup);
-app.route('/users/signin').get(Controllers.Users.signin);
+app.route('/users/signin').post(Controllers.Users.signin);
 app.route('/users/logout').get(Controllers.Users.signout);
+app.route('/users/check').get(expressJwt({secret: secretToken}), Controllers.Users.checkLogin);
 
 
 // Article Controllers
@@ -57,6 +76,14 @@ app.route('/articles/:articleId').get(Controllers.Articles.read)
 
 // Finish by binding the article middleware
 app.param('articleId', Controllers.Articles.articleByID);
+
+app.use(function (err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.send(401, 'invalid token...');
+    }
+});
+
+
 
 
 app.listen(PORT);
