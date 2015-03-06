@@ -1,6 +1,6 @@
 {
   "name": "angular-cms-api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Api for Workshop Angular CMS",
   "main": "index.js",
   "scripts": {
